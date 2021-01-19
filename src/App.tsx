@@ -18,15 +18,16 @@ const Albums = () => {
   useEffect( () => {
     async function fetchData(){
       try {
+        if(state.albums.length === 0){
         const response = await axios.get('http://localhost:1337/albums');
-        console.log(response);
         setState({...state, albums: response.data });
+        }
       } catch (error) {
         setState({ ...state, error });
       }
     }
   fetchData();
-  },[]);
+  });
 
   if (state.error) {
     return <div>An error occured: {state.error.message}</div>;
