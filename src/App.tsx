@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 
 import axios from 'axios';
+import API_URL from './config/env';
 
 function App() {
 
@@ -19,7 +20,7 @@ const Albums = () => {
     async function fetchData(){
       try {
         if(state.albums.length === 0){
-        const response = await axios.get('http://localhost:1337/albums');
+        const response = await axios.get(API_URL+'albums');
         setState({...state, albums: response.data });
         }
       } catch (error) {
