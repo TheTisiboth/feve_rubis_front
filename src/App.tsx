@@ -13,22 +13,37 @@ function App() {
   );
 }
 
-const Albums = () => {
-  const [state,setState] = useState<{albums:any[],error:any}>({albums:[],error:null});
+type MusiqueType = {
+  id: number;
+  Titre: string;
+  albums: AlbumType[];
+  Fichier: File[];
+  Image: File[];
+}
 
-  useEffect( () => {
-    async function fetchData(){
-      try {
-        if(state.albums.length === 0){
-        const response = await axios.get(API_URL+'albums');
-        setState({...state, albums: response.data });
-        }
-      } catch (error) {
-        setState({ ...state, error });
-      }
-    }
-  fetchData();
-  });
+type AlbumType = {
+  id: number;
+  Titre: string;
+  musiques: MusiqueType[];
+  Image: File[];
+}
+
+const Albums = () => {
+  const [state, setState] = useState<{ albums: AlbumType[], error: any }>({ albums: [], error: null });
+
+  const fetchAlbums = () => {
+    axios.get(API_URL + 'albums')
+      .then(response => {
+          setState({...state, albums: response.data });
+      })
+      .catch(error => {
+          setState({ ...state, error });
+      })
+  }
+
+  useEffect(() => {
+    fetchAlbums();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (state.error) {
     return <div>An error occured: {state.error.message}</div>;
@@ -42,12 +57,12 @@ const Albums = () => {
   );
 }
 
-const Album = ({album}:{album:any}) => {
+const Album = ({ album }: { album: AlbumType }) => {
 
   return (
     <>
     <li>{album.Titre}</li>
-    <ul>{album.musiques.map((musique:any) => (
+      <ul>{album.musiques.map((musique: MusiqueType) => (
       <Musique key={musique.id} musique={musique}/>
     ))}</ul>
     </>
@@ -55,7 +70,7 @@ const Album = ({album}:{album:any}) => {
 
 }
 
-const Musique = ({musique}:{musique:any}) => {
+const Musique = ({ musique }: { musique: MusiqueType }) => {
   return (
     <li>{musique.Titre}</li>
   );
