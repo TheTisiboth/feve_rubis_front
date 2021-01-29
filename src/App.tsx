@@ -4,13 +4,12 @@ import './App.css';
 import axios from 'axios';
 import API_URL from './config/env';
 
-function App() {
-
+const App = (): JSX.Element => {
   return (
     <div className="App">
      <Albums />
     </div>
-  );
+  )
 }
 
 type MusiqueType = {
@@ -28,49 +27,49 @@ type AlbumType = {
   Image: File[];
 }
 
-const Albums = () => {
+const Albums = (): JSX.Element => {
   const [state, setState] = useState<{ albums: AlbumType[], error: any }>({ albums: [], error: null });
 
-  const fetchAlbums = () => {
+  const fetchAlbums = (): void => {
     axios.get(API_URL + 'albums')
       .then(response => {
-          setState({...state, albums: response.data });
+        setState({ ...state, albums: response.data });
       })
       .catch(error => {
-          setState({ ...state, error });
+        setState({ ...state, error });
       })
   }
 
   useEffect(() => {
     fetchAlbums();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   if (state.error) {
     return <div>An error occured: {state.error.message}</div>;
   }
   return (
     <ul>
-          {state.albums.map(album => (
+        {state.albums.map(album => (
             <Album key={album.id} album={album}/>
-          ))}
-        </ul>
+        ))}
+    </ul>
   );
 }
 
-const Album = ({ album }: { album: AlbumType }) => {
-
+const Album = ({ album }: { album: AlbumType }): JSX.Element => {
   return (
     <>
     <li>{album.Titre}</li>
-      <ul>{album.musiques.map((musique: MusiqueType) => (
-      <Musique key={musique.id} musique={musique}/>
-    ))}</ul>
+      <ul>
+        {album.musiques.map((musique: MusiqueType) => (
+        <Musique key={musique.id} musique={musique}/>
+        ))}
+      </ul>
     </>
   );
-
 }
 
-const Musique = ({ musique }: { musique: MusiqueType }) => {
+const Musique = ({ musique }: { musique: MusiqueType }): JSX.Element => {
   return (
     <li>{musique.Titre}</li>
   );
